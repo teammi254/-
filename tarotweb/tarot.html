@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ตำราไพ่ทาโรต์ 78 ใบ</title>
+<link href="https://fonts.googleapis.com/css2?family=Taviraj:wght@400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1:#f4eefb;
+    --bg-2:#ece0fb;
+    --panel:#ffffff;
+    --ink:#3a2a52;
+    --ink-soft:#6b5a89;
+    --violet:#6a3fb5;
+    --violet-deep:#4b2b86;
+    --gold:#c79a3e;
+    --line:#ddc9f7;
+    --fire:#c1694f;
+    --water:#4d7fb0;
+    --air:#7c7c93;
+    --earth:#5f8a5a;
+    --shadow: 0 10px 30px rgba(90,50,150,0.12);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Prompt',sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #fbf3ff 0%, transparent 60%),
+      radial-gradient(1000px 700px at 110% 10%, #f0e3ff 0%, transparent 55%),
+      linear-gradient(180deg, var(--bg-1), var(--bg-2));
+    min-height:100vh;
+    line-height:1.65;
+  }
+  h1,h2,h3{ font-family:'Taviraj',serif; margin:0; }
+
+  /* ---------- Moon phase divider (signature element) ---------- */
+  .moon-divider{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    margin: 2rem auto; width:min(520px,80%);
+  }
+  .moon-divider .line{ height:1px; flex:1; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+  .moon-divider .phases{ display:flex; gap:8px; }
+  .moon-divider svg{ width:16px; height:16px; }
+
+  /* ---------- Header / Hero ---------- */
+  header.hero{
+    text-align:center;
+    padding: 4.5rem 1.5rem 3rem;
+    position:relative;
+    overflow:hidden;
+  }
+  header.hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(2px 2px at 20% 30%, rgba(107,60,181,0.35) 0, transparent 60%),
+                       radial-gradient(2px 2px at 80% 20%, rgba(107,60,181,0.3) 0, transparent 60%),
+                       radial-gradient(2px 2px at 60% 70%, rgba(199,154,62,0.35) 0, transparent 60%),
+                       radial-gradient(2px 2px at 30% 80%, rgba(107,60,181,0.25) 0, transparent 60%),
+                       radial-gradient(2px 2px at 90% 65%, rgba(199,154,62,0.3) 0, transparent 60%);
+    pointer-events:none;
+  }
+  .eyebrow{
+    letter-spacing:0.25em; text-transform:uppercase; font-size:0.75rem;
+    color:var(--gold); font-weight:600; margin-bottom:0.8rem;
+  }
+  header.hero h1{
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    color:var(--violet-deep);
+    font-weight:600;
+  }
+  header.hero p{
+    color:var(--ink-soft); font-size:1.05rem; max-width:560px; margin:1rem auto 0;
+  }
+  .search-container{
+    margin-top: 2rem; display:flex; max-width:500px; width:90%; margin-left:auto; margin-right:auto;
+    box-shadow: var(--shadow); border-radius: 999px;
+  }
+  #search-input{
+    flex-grow:1; border:1px solid var(--line); background:var(--panel); color:var(--ink);
+    padding: 0.8rem 1.2rem; border-radius: 999px 0 0 999px; font-family: 'Prompt', sans-serif; font-size: 0.95rem;
+    border-right:none;
+  }
+  #search-btn{
+    border:none; background:var(--violet); color:white; padding: 0 1.8rem; border-radius: 0 999px 999px 0;
+    font-family: 'Prompt', sans-serif; font-size: 0.95rem; cursor:pointer; transition: background .2s;
+  }
+  #search-btn:hover{ background: var(--violet-deep); }
+
+  /* ---------- Portal selection (landing) ---------- */
+  .portals{
+    display:grid; grid-template-columns: 1fr 1fr; gap:2rem;
+    max-width:960px; margin: 1rem auto 4rem; padding:0 1.5rem;
+  }
+  @media (max-width:720px){ .portals{ grid-template-columns:1fr; } }
+
+  .portal-card{
+    background:var(--panel);
+    border-radius:20px;
+    padding:2.2rem 1.8rem;
+    text-align:center;
+    border:1px solid var(--line);
+    box-shadow:var(--shadow);
+    cursor:pointer;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    position:relative;
+  }
+  .portal-card:hover{
+    transform:translateY(-6px);
+    box-shadow: 0 18px 40px rgba(90,50,150,0.2);
+    border-color:var(--violet);
+  }
+  .portal-icon{ width:64px; height:64px; margin:0 auto 1rem; }
+  .portal-card h2{ font-size:1.6rem; color:var(--violet-deep); margin-bottom:0.4rem; }
+  .portal-count{
+    display:inline-block; margin-top:0.6rem;
+    font-size:0.8rem; letter-spacing:0.08em;
+    color:#fff; background:var(--gold);
+    padding:0.25rem 0.9rem; border-radius:999px;
+  }
+  .portal-card p.desc{ color:var(--ink-soft); font-size:0.92rem; margin-top:0.9rem; }
+
+  /* ---------- Views ---------- */
+  .view{ display:none; }
+  .view.active{ display:block; }
+
+  .back-btn{
+    display:inline-flex; align-items:center; gap:0.4rem;
+    background:none; border:1px solid var(--line);
+    color:var(--violet-deep); font-family:'Prompt',sans-serif;
+    padding:0.5rem 1.1rem; border-radius:999px; cursor:pointer;
+    font-size:0.9rem; margin: 0 auto; display:flex; width:fit-content;
+    transition: background .2s ease;
+  }
+  .back-btn:hover{ background:#fff; }
+
+  .view-header{ text-align:center; padding: 2.5rem 1.5rem 1rem; }
+  .view-header h2{ font-size:2rem; color:var(--violet-deep); }
+  .view-header p{ color:var(--ink-soft); margin-top:0.5rem; }
+
+  /* Suit tabs (minor arcana) */
+  .suit-tabs{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:0.8rem;
+    margin: 1.5rem auto 0; padding:0 1rem;
+  }
+  .suit-tab{
+    display:flex; align-items:center; gap:0.5rem;
+    border-radius:999px; padding:0.55rem 1.2rem;
+    border:1.5px solid var(--line); background:#fff;
+    cursor:pointer; font-family:'Prompt',sans-serif; font-size:0.92rem;
+    color:var(--ink); transition: all .2s ease;
+  }
+  .suit-tab svg{ width:16px; height:16px; }
+  .suit-tab.active{ color:#fff; border-color:transparent; }
+  .suit-tab[data-suit="wands"].active{ background:var(--fire); }
+  .suit-tab[data-suit="cups"].active{ background:var(--water); }
+  .suit-tab[data-suit="swords"].active{ background:var(--air); }
+  .suit-tab[data-suit="pentacles"].active{ background:var(--earth); }
+
+  .container{ max-width:1200px; margin:0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .grid{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+    gap:1.8rem;
+  }
+
+  .tarot-card{
+    background:var(--panel);
+    border-radius:16px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    box-shadow: 0 6px 16px rgba(90,50,150,0.08);
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .tarot-card:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 14px 30px rgba(90,50,150,0.18);
+  }
+  .card-image-wrap{
+    background: linear-gradient(160deg,#efe4fb,#f8f2ff);
+    display:flex; align-items:center; justify-content:center;
+    padding:1.2rem;
+  }
+  .card-image-wrap img{
+    width:auto; max-width:100%; height:280px; object-fit:contain;
+    border-radius:6px;
+    box-shadow: 0 6px 18px rgba(60,30,100,0.25);
+  }
+  .card-content{ padding:1.4rem 1.5rem 1.6rem; }
+  .card-title{
+    font-size:1.3rem; text-align:center; color:var(--violet-deep);
+    padding-bottom:0.7rem; margin-bottom:0.9rem;
+    border-bottom:1px dashed var(--line);
+  }
+  .card-details{ list-style:none; margin:0; padding:0; }
+  .card-details li{ margin-bottom:0.65rem; font-size:0.92rem; color:var(--ink); }
+  .card-details li strong{ color:var(--violet); font-weight:600; }
+  .suit-accent-wands .card-title{ color:var(--fire); }
+  .suit-accent-cups .card-title{ color:var(--water); }
+  .suit-accent-swords .card-title{ color:var(--air); }
+  .suit-accent-pentacles .card-title{ color:var(--earth); }
+
+  footer{
+    text-align:center; padding:2.2rem 1rem; color:var(--ink-soft); font-size:0.85rem;
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">ตำราแห่งดวงดาวและสัญชาตญาณ</div>
+  <h1>คู่มือความหมายไพ่ทาโรต์ 78 ใบ</h1>
+  <p>เจาะลึกการงาน การเงิน ความรัก สุขภาพ และลักษณะเฉพาะของไพ่แต่ละใบ เลือกชุดไพ่ที่ต้องการศึกษาด้านล่าง</p>
+  <div class="search-container">
+    <input type="search" id="search-input" placeholder="ค้นหาตามคีย์เวิร์ด (เช่น การเงิน, ความรัก, โสด)...">
+    <button id="search-btn">ค้นหา</button>
+  </div>
+</header>
+
+<div class="moon-divider">
+  <div class="line"></div>
+  <div class="phases">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#4b2b86" opacity="0.15"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 000 18 6.5 6.5 0 010-18z" fill="#c79a3e"/></svg>
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#c79a3e"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 010 18 6.5 6.5 0 000-18z" fill="#c79a3e"/></svg>
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#4b2b86" opacity="0.15"/></svg>
+  </div>
+  <div class="line"></div>
+</div>
+
+<!-- ============ LANDING: PORTAL SELECTION ============ -->
+<div id="landing" class="view active">
+  <div class="portals">
+    <div class="portal-card" id="portal-major">
+      <svg class="portal-icon" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="#c79a3e" stroke-width="2"/><path d="M32 10 L36 26 L52 26 L39 35 L44 51 L32 41 L20 51 L25 35 L12 26 L28 26 Z" fill="#6a3fb5"/></svg>
+      <h2>ไพ่ชุดใหญ่</h2>
+      <p class="desc">เรื่องราวหลักของชีวิต จุดเปลี่ยนสำคัญ และบทเรียนทางจิตวิญญาณ</p>
+      <span class="portal-count">Major Arcana · 22 ใบ</span>
+    </div>
+    <div class="portal-card" id="portal-minor">
+      <svg class="portal-icon" viewBox="0 0 64 64">
+        <path d="M32 8 C24 20 24 28 32 34 C40 28 40 20 32 8Z" fill="#c1694f"/>
+        <path d="M14 46 C14 38 20 34 20 34 C20 34 26 38 26 46 C26 50 23 53 20 53 C17 53 14 50 14 46Z" fill="#4d7fb0"/>
+        <path d="M44 36 L54 46 L44 56 L34 46 Z" fill="#7c7c93"/>
+        <circle cx="32" cy="52" r="8" fill="none" stroke="#5f8a5a" stroke-width="3"/>
+      </svg>
+      <h2>ไพ่ชุดเล็ก</h2>
+      <p class="desc">เรื่องราวในชีวิตประจำวัน แบ่งเป็น 4 ธาตุ: ไฟ น้ำ อากาศ ดิน</p>
+      <span class="portal-count">Minor Arcana · 56 ใบ</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MAJOR ARCANA VIEW ============ -->
+<div id="major" class="view">
+  <div class="view-header">
+    <button class="back-btn">← กลับหน้าเลือกชุดไพ่</button>
+    <h2 style="margin-top:1.2rem;">🌟 Major Arcana — ไพ่ชุดใหญ่ 22 ใบ</h2>
+    <p>เรื่องราวการเดินทางของ "The Fool" ผ่านบทเรียนสำคัญของชีวิต</p>
+  </div>
+  <div class="container">
+    <div class="grid" id="major-grid"></div>
+  </div>
+</div>
+
+<!-- ============ MINOR ARCANA VIEW ============ -->
+<div id="minor" class="view">
+  <div class="view-header">
+    <button class="back-btn">← กลับหน้าเลือกชุดไพ่</button>
+    <h2 style="margin-top:1.2rem;">🔮 Minor Arcana — ไพ่ชุดเล็ก 56 ใบ</h2>
+    <p>แบ่งตาม 4 ธาตุ เลือกชุดที่ต้องการศึกษา</p>
+    <div class="suit-tabs">
+      <div class="suit-tab active" data-suit="wands">
+        <svg viewBox="0 0 24 24"><path d="M12 2c-3 4-3 7 0 10 3-3 3-6 0-10z" fill="currentColor"/></svg>
+        Wands · ไฟ
+      </div>
+      <div class="suit-tab" data-suit="cups">
+        <svg viewBox="0 0 24 24"><path d="M5 15c0-3 2-6 2-6h10s2 3 2 6a7 7 0 01-14 0z" fill="currentColor"/></svg>
+        Cups · น้ำ
+      </div>
+      <div class="suit-tab" data-suit="swords">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3 3-9 9-3-3z" fill="currentColor"/><path d="M15 5l4 4-9 9-4-4z" fill="currentColor" opacity="0.6"/></svg>
+        Swords · อากาศ
+      </div>
+      <div class="suit-tab" data-suit="pentacles">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        Pentacles · ดิน
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="grid" id="minor-grid"></div>
+  </div>
+</div>
+
+<!-- ============ SEARCH RESULTS VIEW ============ -->
+<div id="search-results" class="view">
+  <div class="view-header">
+    <button class="back-btn">← กลับหน้าเลือกชุดไพ่</button>
+    <h2 style="margin-top:1.2rem;">ผลการค้นหา</h2>
+    <p id="search-results-desc"></p>
+  </div>
+  <div class="container">
+    <div class="grid" id="search-results-grid"></div>
+  </div>
+</div>
+
+<footer>&copy; 2026 คู่มือไพ่ทาโรต์ — สร้างสรรค์เพื่อการศึกษาและทบทวนความหมาย · ภาพประกอบ: Rider–Waite–Smith Tarot (สาธารณสมบัติ)</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
