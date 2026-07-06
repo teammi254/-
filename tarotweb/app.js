@@ -1,4 +1,4 @@
-import { WIKI, major, minor } from './data.js';
+import { major, minor } from './data.js';
 
 // --- DOM Elements ---
 const views = document.querySelectorAll(".view");
@@ -35,7 +35,7 @@ const allCards = [
 function cardHTML(c, suitClass) {
   return `
   <div class="tarot-card ${suitClass || ""}">
-    <div class="card-image-wrap"><img src="${WIKI(c.img)}" alt="${c.n}" loading="lazy"></div>
+    <div class="card-image-wrap"><img src="${c.img}" alt="${c.n}" loading="lazy"></div>
     <div class="card-content">
       <h3 class="card-title">${c.n}</h3>
       <ul class="card-details">
