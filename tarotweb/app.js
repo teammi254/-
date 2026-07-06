@@ -55,13 +55,7 @@ function getSuitClass(card) {
 }
 
 function renderSuit(suit) {
-  minorGrid.innerHTML = minor[suit].map(c => cardHTML(c, getSuitClass(c))).join("");
-}
-
-function showSuit(suit) {
-  suitTabs.forEach(t => t.classList.toggle("active", t.dataset.suit === suit));
-  renderSuit(suit);
-  minorGrid.scrollIntoView({ behavior: "smooth", block: "start" });
+  minorGrid.innerHTML = minor[suit].map(c => cardHTML(c, getSuitClass({ ...c, suit }))).join("");
 }
 
 function showView(id) {
@@ -102,20 +96,23 @@ function performSearch() {
 document.addEventListener('DOMContentLoaded', () => {
   // Initial Renders
   majorGrid.innerHTML = major.map(c => cardHTML(c, getSuitClass(c))).join("");
-  renderSuit("wands");
+  renderSuit("pentacles"); // แสดงชุด Pentacles เป็นค่าเริ่มต้น
 
   // View navigation
   portalMajor.addEventListener('click', () => showView('major'));
   portalMinor.addEventListener('click', () => showView('minor'));
   backButtons.forEach(btn => btn.addEventListener('click', () => {
     showView('landing');
-    searchInput.value = ""; // Clear search input when going back
+    searchInput.value = ""; // ล้างค่าในช่องค้นหาเมื่อกลับหน้าหลัก
   }));
 
   // Suit tabs
   suitTabsContainer.addEventListener('click', (e) => {
     const tab = e.target.closest('.suit-tab');
-    if (tab) showSuit(tab.dataset.suit);
+    if (!tab) return;
+    suitTabs.forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    renderSuit(tab.dataset.suit);
   });
 
   // Search functionality
