@@ -126,6 +126,21 @@
   .portal-card p.desc{ color:var(--ink-soft); font-size:0.92rem; margin-top:0.9rem; }
 
   /* ---------- Views ---------- */
+  /* --- Card Detail View --- */
+  #card-detail { background-color: #fde8e8; padding-top: 2rem; padding-bottom: 4rem; }
+  .detail-header { text-align: center; margin-bottom: 2rem; }
+  .detail-header-badge { display: inline-block; background-color: #5c2c2c; color: #fff; padding: 0.5rem 1.5rem; border-radius: 9999px; font-size: 1.25rem; font-weight: bold; }
+  .detail-container { display: flex; flex-direction: column; gap: 2rem; max-width: 900px; margin: 0 auto; padding: 0 1rem; }
+  @media (min-width: 768px) { .detail-container { flex-direction: row; } }
+  .detail-left-col { flex: 1; display: flex; justify-content: center; align-items: flex-start; }
+  .detail-card-image { width: 100%; max-width: 350px; border-radius: 16px; border: 2px solid white; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08); }
+  .detail-right-col { flex: 1.5; background-color: #5c2c2c; border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+  .detail-meaning-box { background-color: #fce0e0; border-radius: 12px; padding: 1rem 1.5rem; }
+  .detail-meaning-box h3 { font-size: 1.1rem; font-weight: bold; color: #1a1a1a; margin-top: 0; margin-bottom: 0.5rem; }
+  .detail-meaning-box p { font-size: 1rem; color: #333; margin: 0; line-height: 1.6; }
+  #card-detail .back-btn { margin-top: 2rem; background-color: #5c2c2c; color: white; border: none; }
+  #card-detail .back-btn:hover { background-color: #7a4242; }
+
   .view{ display:none; }
   .view.active{ display:block; }
 
@@ -133,11 +148,11 @@
     display:inline-flex; align-items:center; gap:0.4rem;
     background:none; border:1px solid var(--line);
     color:var(--violet-deep); 
-    padding:0.5rem 1.1rem; border-radius:999px; cursor:pointer;
-    font-size:0.9rem; margin: 0 auto; display:flex; width:fit-content;
+    padding:0.6rem 1.2rem; border-radius:999px; cursor:pointer;
+    font-size:0.9rem;
     transition: background .2s ease;
   }
-  .back-btn:hover{ background:#fff; }
+  .back-btn:hover{ background:rgba(255,255,255,0.7); }
 
   .view-header{ text-align:center; padding: 2.5rem 1.5rem 1rem; }
   .view-header h2{ font-size:2rem; color:var(--violet-deep); }
@@ -164,7 +179,7 @@
 
   .container{ max-width:1200px; margin:0 auto; padding: 2rem 1.5rem 4rem; }
 
-  .grid{
+  .card-grid{
     display:grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
     gap:1.8rem;
   }
@@ -175,8 +190,20 @@
     overflow:hidden;
     border:1px solid var(--line);
     box-shadow: 0 6px 16px rgba(90,50,150,0.08);
-    transition: transform .25s ease, box-shadow .25s ease;
+    transition: transform .25s ease, box-shadow .25s ease; cursor: pointer;
   }
+  /* Initial state for animation */
+  .tarot-card {
+    opacity: 0; /* Start invisible */
+    transform: translateY(20px); /* Start slightly below its final position */
+    animation: card-appear 0.5s ease-out forwards; /* Apply the animation */
+    /* animation-delay will be set via JavaScript for staggered effect */
+  }
+  @keyframes card-appear {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   .tarot-card:hover{
     transform: translateY(-6px);
     box-shadow: 0 14px 30px rgba(90,50,150,0.18);
@@ -191,15 +218,10 @@
     border-radius:6px;
     box-shadow: 0 6px 18px rgba(60,30,100,0.25);
   }
-  .card-content{ padding:1.4rem 1.5rem 1.6rem; }
+  .card-content{ padding:1.2rem; }
   .card-title{
-    font-size:1.3rem; text-align:center; color:var(--violet-deep);
-    padding-bottom:0.7rem; margin-bottom:0.9rem;
-    border-bottom:1px dashed var(--line);
+    font-size:1.1rem; text-align:center; color:var(--violet-deep);
   }
-  .card-details{ list-style:none; margin:0; padding:0; }
-  .card-details li{ margin-bottom:0.65rem; font-size:0.92rem; color:var(--ink); }
-  .card-details li strong{ color:var(--violet); font-weight:600; }
   .suit-accent-wands .card-title{ color:var(--fire); }
   .suit-accent-cups .card-title{ color:var(--water); }
   .suit-accent-swords .card-title{ color:var(--air); }
@@ -243,7 +265,7 @@
 
 <!-- ============ LANDING: PORTAL SELECTION ============ -->
 <div id="landing" class="view active">
-  <div class="portals">
+  <div class="portals" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
     <div class="portal-card" id="portal-major">
       <svg class="portal-icon" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="#c79a3e" stroke-width="2"/><path d="M32 10 L36 26 L52 26 L39 35 L44 51 L32 41 L20 51 L25 35 L12 26 L28 26 Z" fill="#6a3fb5"/></svg>
       <h2>ไพ่ชุดใหญ่</h2>
@@ -267,33 +289,33 @@
 <!-- ============ MAJOR ARCANA VIEW ============ -->
 <div id="major" class="view">
   <div class="view-header">
-    <button class="back-btn">← กลับหน้าเลือกชุดไพ่</button>
+    <button class="back-btn" data-target="landing">← กลับหน้าหลัก</button>
     <h2 style="margin-top:1.2rem;">🌟 Major Arcana — ไพ่ชุดใหญ่ 22 ใบ</h2>
     <p>เรื่องราวการเดินทาง ผ่านบทเรียนสำคัญของชีวิต</p>
   </div>
   <div class="container">
-    <div class="grid" id="major-grid"></div>
+    <div class="card-grid" id="major-grid"></div>
   </div>
 </div>
 
 <!-- ============ MINOR ARCANA VIEW ============ -->
 <div id="minor" class="view">
   <div class="view-header">
-    <button class="back-btn">← กลับหน้าเลือกชุดไพ่</button>
+    <button class="back-btn" data-target="landing">← กลับหน้าหลัก</button>
     <h2 style="margin-top:1.2rem;">🔮 Minor Arcana — ไพ่ชุดเล็ก 56 ใบ</h2>
     <p>แบ่งตาม 4 ธาตุ เลือกชุดที่ต้องการศึกษา</p>
     <div class="suit-tabs">
-      <div class="suit-tab active" data-suit="pentacles">
+      <div class="suit-tab" data-suit="pentacles">
         <svg viewBox="0 0 24 24"><path d="M12 2c-3 4-3 7 0 10 3-3 3-6 0-10z" fill="currentColor"/></svg>
         pentacles · ดิน
       </div>
       <div class="suit-tab" data-suit="cups">
         <svg viewBox="0 0 24 24"><path d="M5 15c0-3 2-6 2-6h10s2 3 2 6a7 7 0 01-14 0z" fill="currentColor"/></svg>
-        Cups · น้ำ
+        cups · น้ำ
       </div>
       <div class="suit-tab" data-suit="swords">
         <svg viewBox="0 0 24 24"><path d="M12 2l3 3-9 9-3-3z" fill="currentColor"/><path d="M15 5l4 4-9 9-4-4z" fill="currentColor" opacity="0.6"/></svg>
-        Swords · ลม
+        swords · ลม
       </div>
       <div class="suit-tab" data-suit="wands">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/></svg>
@@ -302,21 +324,27 @@
     </div>
   </div>
   <div class="container">
-    <div class="grid" id="minor-grid"></div>
+    <div class="card-grid" id="minor-grid"></div>
   </div>
 </div>
 
 <!-- ============ SEARCH RESULTS VIEW ============ -->
 <div id="search-results" class="view">
   <div class="view-header">
-    <button class="back-btn">← กลับหน้าเลือกชุดไพ่</button>
+    <button class="back-btn" data-target="landing">← กลับหน้าหลัก</button>
     <h2 style="margin-top:1.2rem;">ผลการค้นหา</h2>
     <p id="search-results-desc"></p>
   </div>
   <div class="container">
-    <div class="grid" id="search-results-grid"></div>
+    <div class="card-grid" id="search-results-grid"></div>
   </div>
 </div>
+
+<!-- ============ CARD DETAIL VIEW (NEW) ============ -->
+<section id="card-detail" class="view">
+  <!-- Content will be generated by JavaScript -->
+</section>
+
 
 <footer>&copy; 2026 คู่มือไพ่ทาโรต์ — สร้างสรรค์เพื่อการศึกษาและทบทวนความหมาย · <a href="https://en.wikipedia.org/wiki/Rider%E2%80%93Waite_Tarot">ภาพประกอบ: Rider–Waite–Smith Tarot (สาธารณสมบัติ)</a> </footer>
 
