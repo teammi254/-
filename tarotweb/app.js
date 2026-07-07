@@ -1,8 +1,7 @@
-import { WIKI, major, minor } from './data.js';
+import { major, minor } from './data.js';
 
 // --- DOM Elements ---
 const views = document.querySelectorAll(".view");
-const backButtons = document.querySelectorAll(".back-btn");
 
 // Landing
 const portalMajor = document.getElementById("portal-major");
@@ -22,6 +21,10 @@ const suitTabs = document.querySelectorAll(".suit-tab");
 const searchResultsGrid = document.getElementById("search-results-grid");
 const searchResultsDesc = document.getElementById("search-results-desc");
 
+// Card Detail
+const cardDetailView = document.getElementById("card-detail");
+let previousView = 'landing'; // To track which view to go back to
+
 // --- Data Preparation ---
 const allCards = [
   ...major.map(c => ({ ...c, suit: 'major' })),
@@ -32,33 +35,59 @@ const allCards = [
 
 // --- Functions ---
 
-function cardHTML(c, suitClass) {
+function cardHTML(c, index = 0) { // เพิ่ม parameter 'index'
   return `
-  <div class="tarot-card ${suitClass || ""}">
-    <div class="card-image-wrap"><img src="${WIKI(c.img)}" alt="${c.n}" loading="lazy"></div>
+  <div class="tarot-card" data-card-name="${c.n}" style="animation-delay: ${index * 0.05}s;">
+    <div class="card-image-wrap"><img src="${c.img}" alt="${c.n}" loading="lazy"></div>
     <div class="card-content">
       <h3 class="card-title">${c.n}</h3>
-      <ul class="card-details">
-        <li><strong>การงาน:</strong> ${c.work}</li>
-        <li><strong>การเงิน:</strong> ${c.money}</li>
-        <li><strong>ความรัก:</strong> ${c.love}</li>
-        <li><strong>สุขภาพ:</strong> ${c.health}</li>
-        <li><strong>ความหมายเฉพาะ:</strong> ${c.special}</li>
-      </ul>
     </div>
   </div>`;
 }
 
-function getSuitClass(card) {
-  if (card.suit === 'major') return "";
-  return `suit-accent-${card.suit}`;
+function renderCardDetail(card) {
+  const meanings = [
+    { title: "ความหมายทั่วไป (การงาน/ภาพรวม)", text: card.work },
+    { title: "ความหมายด้านการเงิน", text: card.money },
+    { title: "ความหมายด้านความรัก", text: card.love },
+    { title: "ความหมายด้านสุขภาพ", text: card.health },
+    { title: "ลักษณะเฉพาะ/บุคคล/สถานที่", text: card.special },
+  ];
+
+  cardDetailView.innerHTML = `
+    <div class="detail-header">
+      <span class="detail-header-badge">${card.n}</span>
+    </div>
+    <div class="detail-container">
+      <div class="detail-left-col">
+        <img src="${card.img}" alt="${card.n}" class="detail-card-image">
+      </div>
+      <div class="detail-right-col">
+        ${meanings.map(meaning => `
+          <div class="detail-meaning-box">
+            <h3>${meaning.title}</h3>
+            <p>${meaning.text}</p>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div style="text-align: center;">
+       <button class="back-btn" data-target="${previousView}">
+         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20"><path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" /></svg>
+         ย้อนกลับ
+       </button>
+    </div>
+  </div>`;
 }
 
 function renderSuit(suit) {
-  minorGrid.innerHTML = minor[suit].map(c => cardHTML(c, getSuitClass({ ...c, suit }))).join("");
+  minorGrid.innerHTML = minor[suit].map((c, i) => cardHTML(c, i)).join("");
 }
 
 function showView(id) {
+  const currentActive = document.querySelector('.view.active');
+  if (currentActive && id !== 'card-detail') previousView = currentActive.id;
+
   views.forEach(v => v.classList.remove("active"));
   document.getElementById(id).classList.add("active");
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -77,7 +106,7 @@ function performSearch() {
 
   if (results.length > 0) {
     searchResultsDesc.innerHTML = `พบ ${results.length} ใบที่ตรงกับคำว่า "<strong>${keyword}</strong>"`;
-    searchResultsGrid.innerHTML = results.map(c => cardHTML(c, getSuitClass(c))).join("");
+    searchResultsGrid.innerHTML = results.map((c, i) => cardHTML(c, i)).join("");
   } else {
     searchResultsDesc.innerHTML = `ไม่พบไพ่ที่ตรงกับคำว่า "<strong>${keyword}</strong>"`;
     searchResultsGrid.innerHTML = `
@@ -95,16 +124,27 @@ function performSearch() {
 
 document.addEventListener('DOMContentLoaded', () => {
   // Initial Renders
-  majorGrid.innerHTML = major.map(c => cardHTML(c, getSuitClass(c))).join("");
+  majorGrid.innerHTML = major.map((c, i) => cardHTML(c, i)).join("");
+  // Set the default active tab for minor arcana
+  const defaultSuitTab = suitTabsContainer.querySelector('[data-suit="pentacles"]');
+  if (defaultSuitTab) defaultSuitTab.classList.add('active');
   renderSuit("pentacles"); // แสดงชุด Pentacles เป็นค่าเริ่มต้น
 
   // View navigation
   portalMajor.addEventListener('click', () => showView('major'));
   portalMinor.addEventListener('click', () => showView('minor'));
-  backButtons.forEach(btn => btn.addEventListener('click', () => {
-    showView('landing');
-    searchInput.value = ""; // ล้างค่าในช่องค้นหาเมื่อกลับหน้าหลัก
-  }));
+
+  // Back buttons (now using event delegation on the body)
+  document.body.addEventListener('click', (e) => {
+    if (e.target.matches('.back-btn')) {
+      const targetView = e.target.dataset.target || 'landing';
+      showView(targetView);
+      if (targetView === 'landing') {
+        searchInput.value = ""; // Clear search only when going to landing
+      }
+    }
+  });
+
 
   // Suit tabs
   suitTabsContainer.addEventListener('click', (e) => {
@@ -119,5 +159,17 @@ document.addEventListener('DOMContentLoaded', () => {
   searchBtn.addEventListener('click', performSearch);
   searchInput.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') performSearch();
+  });
+
+  // Card click to show detail view
+  document.body.addEventListener('click', (e) => {
+    const cardElement = e.target.closest('.tarot-card');
+    if (!cardElement) return;
+
+    const cardName = cardElement.dataset.cardName;
+    const cardData = allCards.find(c => c.n === cardName);
+
+    renderCardDetail(cardData);
+    showView('card-detail');
   });
 });
